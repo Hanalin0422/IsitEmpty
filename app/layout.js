@@ -14,6 +14,20 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "CSPI 휴게실 상태 확인",
   description: "6층 여자 휴게실 사용 중 여부를 실시간으로 확인합니다",
+  appleWebApp: {
+    capable: true,
+    title: "IsitEmpty",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({ children }) {
