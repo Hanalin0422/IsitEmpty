@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "휴게실 상태 확인",
+  title: "CSPI 휴게실 상태 확인",
   description: "6층 여자 휴게실 사용 중 여부를 실시간으로 확인합니다",
 };
 
