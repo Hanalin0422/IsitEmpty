@@ -19,6 +19,10 @@ export const metadata = {
     title: "IsitEmpty",
     statusBarStyle: "black-translucent",
   },
+  icons: {
+    icon: "/icon-256.png",
+    apple: "/app-touch-icon.png",
+  },
 };
 
 export const viewport = {

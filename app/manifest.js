@@ -14,6 +14,16 @@ export default function manifest() {
         sizes: "any",
         type: "image/x-icon",
       },
+      {
+        src: "/app-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+      {
+        src: "/icon-256.png",
+        sizes: "256x256",
+        type: "image/png",
+      },
     ],
   };
 }
