@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function GuideSteps({ eyebrow, title, note, steps }) {
   return (
     <div className="flex flex-1 flex-col items-center gap-6 bg-zinc-50 px-6 py-16 dark:bg-black">
@@ -20,17 +22,36 @@ export default function GuideSteps({ eyebrow, title, note, steps }) {
         {steps.map((step, index) => (
           <li
             key={step.title}
-            className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-zinc-900"
+            className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-zinc-900"
           >
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-900">
-              {index + 1}
-            </span>
-            <span className="text-xl" aria-hidden>
-              {step.icon}
-            </span>
-            <p className="text-sm text-zinc-700 dark:text-zinc-200">
-              {step.title}
-            </p>
+            <div className="flex items-center gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-900">
+                {index + 1}
+              </span>
+              <span className="text-xl" aria-hidden>
+                {step.icon}
+              </span>
+              <p className="text-sm text-zinc-700 dark:text-zinc-200">
+                {step.title}
+              </p>
+            </div>
+
+            {step.hint && (
+              <p className="pl-10 text-xs font-medium text-amber-600 dark:text-amber-400">
+                ⚠️ {step.hint}
+              </p>
+            )}
+
+            {step.image && (
+              <Image
+                src={step.image}
+                alt={step.title}
+                width={step.imageWidth}
+                height={step.imageHeight}
+                sizes="(max-width: 400px) 100vw, 320px"
+                className="w-full rounded-xl border border-zinc-100 dark:border-zinc-800"
+              />
+            )}
           </li>
         ))}
       </ol>

@@ -83,7 +83,7 @@ export default function SidebarLayout({ children }) {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={isOpen ? "메뉴 닫기" : "메뉴 열기"}
         aria-expanded={isOpen}
-        className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl text-zinc-700 shadow-md transition-transform hover:scale-105 active:scale-95 dark:bg-zinc-900 dark:text-zinc-200"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] left-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl text-zinc-700 shadow-md transition-transform hover:scale-105 active:scale-95 dark:bg-zinc-900 dark:text-zinc-200"
       >
         ☰
       </button>
@@ -101,7 +101,7 @@ export default function SidebarLayout({ children }) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 px-3 dark:border-zinc-800">
+        <div className="flex min-h-16 shrink-0 items-center justify-between border-b border-zinc-200 px-3 pt-[env(safe-area-inset-top,0px)] dark:border-zinc-800">
           <Link
             href="/"
             onClick={closeSidebar}

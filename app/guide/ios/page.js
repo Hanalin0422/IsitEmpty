@@ -6,9 +6,28 @@ export const metadata = {
 
 const STEPS = [
   { icon: "🧭", title: "Safari 브라우저로 이 사이트에 접속하세요" },
-  { icon: "⬆️", title: "하단 공유 버튼(사각형 + 위쪽 화살표)을 클릭하세요" },
-  { icon: "📜", title: '메뉴를 아래로 스크롤해서 "홈 화면에 추가"를 선택하세요' },
-  { icon: "✅", title: '이름을 확인하고 오른쪽 상단 "추가"를 클릭하세요' },
+  {
+    icon: "⬆️",
+    title: "하단 공유 버튼(사각형 + 위쪽 화살표)을 클릭하세요",
+    hint: "공유 버튼이 안 보이면 화면을 가로로 돌려보세요",
+    image: "/ios_1.PNG",
+    imageWidth: 1080,
+    imageHeight: 1868,
+  },
+  {
+    icon: "📜",
+    title: '메뉴를 아래로 스크롤해서 "홈 화면에 추가"를 선택하세요',
+    image: "/ios_2.PNG",
+    imageWidth: 1080,
+    imageHeight: 1850,
+  },
+  {
+    icon: "✅",
+    title: '이름을 확인하고 오른쪽 상단 "추가"를 클릭하세요',
+    image: "/ios_3.PNG",
+    imageWidth: 1080,
+    imageHeight: 1856,
+  },
   { icon: "🏠", title: "홈 화면에 아이콘이 생성되고, 앱처럼 실행돼요" },
 ];
 
