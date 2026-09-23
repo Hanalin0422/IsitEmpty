@@ -13,6 +13,11 @@ const MENU_ITEMS = [
       { label: "아이폰(iOS)", href: "/guide/ios" },
     ],
   },
+  {
+    label: "이용 통계",
+    icon: "📊",
+    href: "/stats",
+  },
 ];
 
 export default function SidebarLayout({ children }) {
@@ -129,41 +134,37 @@ export default function SidebarLayout({ children }) {
         </div>
 
         <nav className="flex flex-1 flex-col gap-2 overflow-y-auto p-3">
-          <p className="px-2 pt-1 text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-600">
-            이용 가이드
-          </p>
-
-          {MENU_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-zinc-900"
-            >
-              <button
-                type="button"
-                onClick={() => toggleExpanded(item.label)}
-                aria-expanded={!!expanded[item.label]}
-                className="flex w-full items-center gap-2 px-3 py-3 text-left text-sm font-medium text-zinc-700 transition-colors hover:bg-emerald-50 dark:text-zinc-200 dark:hover:bg-emerald-950/40"
-              >
-                <span className="text-base" aria-hidden>
-                  {item.icon}
-                </span>
-                <span className="flex-1">{item.label}</span>
-                <span
-                  className={`text-xs text-emerald-500 transition-transform duration-200 ${
-                    expanded[item.label] ? "rotate-180" : ""
-                  }`}
-                  aria-hidden
-                >
-                  ▾
-                </span>
-              </button>
-
+          {MENU_ITEMS.map((item) =>
+            item.children ? (
               <div
-                className={`grid transition-all duration-200 ${
-                  expanded[item.label] ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                }`}
+                key={item.label}
+                className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-zinc-900"
               >
-                <div className="flex flex-col gap-0.5 overflow-hidden px-2 pb-2">
+                <button
+                  type="button"
+                  onClick={() => toggleExpanded(item.label)}
+                  aria-expanded={!!expanded[item.label]}
+                  className="flex w-full items-center gap-2 px-3 py-3 text-left text-sm font-medium text-zinc-700 transition-colors hover:bg-emerald-50 dark:text-zinc-200 dark:hover:bg-emerald-950/40"
+                >
+                  <span className="text-base" aria-hidden>
+                    {item.icon}
+                  </span>
+                  <span className="flex-1">{item.label}</span>
+                  <span
+                    className={`text-xs text-emerald-500 transition-transform duration-200 ${
+                      expanded[item.label] ? "rotate-180" : ""
+                    }`}
+                    aria-hidden
+                  >
+                    ▾
+                  </span>
+                </button>
+
+                <div
+                  className={`flex flex-col gap-0.5 overflow-hidden px-2 transition-all duration-200 ${
+                    expanded[item.label] ? "max-h-40 pb-2" : "max-h-0 pb-0"
+                  }`}
+                >
                   {item.children.map((child) => (
                     <Link
                       key={child.href}
@@ -180,8 +181,20 @@ export default function SidebarLayout({ children }) {
                   ))}
                 </div>
               </div>
-            </div>
-          ))}
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeSidebar}
+                className="flex items-center gap-2 rounded-2xl bg-white px-3 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-emerald-50 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-emerald-950/40"
+              >
+                <span className="text-base" aria-hidden>
+                  {item.icon}
+                </span>
+                <span className="flex-1">{item.label}</span>
+              </Link>
+            )
+          )}
         </nav>
       </aside>
 
