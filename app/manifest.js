@@ -13,16 +13,25 @@ export default function manifest() {
         src: "/favicon.ico",
         sizes: "any",
         type: "image/x-icon",
+        purpose: "any",
       },
       {
         src: "/app-touch-icon.png",
         sizes: "180x180",
         type: "image/png",
+        purpose: "any",
       },
       {
         src: "/icon-256.png",
         sizes: "256x256",
         type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icon-maskable-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };
