@@ -47,6 +47,13 @@ function isWeekdayBusinessHour(changedAt) {
   );
 }
 
+// 오늘(KST) 날짜를 "YYYY-MM-DD"로 돌려준다. changed_at이 KST 벽시계 문자열이므로
+// 같은 형식으로 맞춰 "오늘 0시 이후" 조건을 걸 때 쓴다.
+function todayKstDateString() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+// 오늘 로그만 받아 9~18시 각 시간대에 문이 닫힌(=사용 시작) 횟수를 센다.
 function buildHourlyUsage(rows) {
   const hours = Array.from(
     { length: BUSINESS_HOURS.end - BUSINESS_HOURS.start + 1 },
@@ -56,8 +63,8 @@ function buildHourlyUsage(rows) {
 
   for (const row of rows) {
     if (row.is_occupied !== true) continue;
-    if (!isWeekdayBusinessHour(row.changed_at)) continue;
     const { hour } = calendarFields(row.changed_at);
+    if (!counts.has(hour)) continue;
     counts.set(hour, counts.get(hour) + 1);
   }
 
@@ -132,24 +139,36 @@ function orangeShade(ratio) {
 
 export default function StatsPage() {
   const [rows, setRows] = useState(null); // null = 로딩 중
+  const [todayRows, setTodayRows] = useState(null); // null = 로딩 중
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function fetchLogs() {
-      const { data, error: fetchError } = await supabase
-        .from("room_status_log")
-        .select("is_occupied, changed_at")
-        .order("changed_at", { ascending: true });
+      // 시간대별 그래프는 오늘 로그만 쓰므로, 전체 로그와 별도로 오늘 0시(KST)
+      // 이후 행만 DB에서 걸러 받는다.
+      const [allResult, todayResult] = await Promise.all([
+        supabase
+          .from("room_status_log")
+          .select("is_occupied, changed_at")
+          .order("changed_at", { ascending: true }),
+        supabase
+          .from("room_status_log")
+          .select("is_occupied, changed_at")
+          .gte("changed_at", `${todayKstDateString()}T00:00:00`)
+          .order("changed_at", { ascending: true }),
+      ]);
 
       if (!isMounted) return;
 
+      const fetchError = allResult.error ?? todayResult.error;
       if (fetchError) {
         console.error("room_status_log 조회 실패:", fetchError);
         setError(fetchError.message);
       } else {
-        setRows(data ?? []);
+        setRows(allResult.data ?? []);
+        setTodayRows(todayResult.data ?? []);
       }
     }
 
@@ -160,8 +179,8 @@ export default function StatsPage() {
   }, []);
 
   const hourlyUsage = useMemo(
-    () => (rows ? buildHourlyUsage(rows) : []),
-    [rows]
+    () => (todayRows ? buildHourlyUsage(todayRows) : []),
+    [todayRows]
   );
   const averageResult = useMemo(
     () =>
@@ -178,7 +197,7 @@ export default function StatsPage() {
     const hourlyTotal = hourlyUsage.reduce((sum, d) => sum + d.count, 0);
     console.log("[이용 통계] 필터링/이상치 검증 로그", {
       로그_전체_행수: rows.length,
-      "① 평일 9~18시 true 건수 (막대그래프 합계)": hourlyTotal,
+      "① 오늘 9~18시 true 건수 (막대그래프 합계)": hourlyTotal,
       "true→false 쌍 (필터 적용 전)": averageResult.debug?.rawPairs ?? 0,
       "① 평일 9~18시 시작 조건 통과 쌍": averageResult.debug?.filteredPairs ?? 0,
       "② 4시간(240분) 이상으로 제외된 이상치 쌍": averageResult.debug?.outliers ?? 0,
@@ -187,9 +206,9 @@ export default function StatsPage() {
     });
   }, [rows, hourlyUsage, averageResult]);
 
-  const isLoading = rows === null && !error;
+  const isLoading = (rows === null || todayRows === null) && !error;
   const hourlyTotal = hourlyUsage.reduce((sum, d) => sum + d.count, 0);
-  const hasChartData = hourlyTotal >= MIN_SAMPLE_SIZE;
+  const hasChartData = hourlyTotal > 0;
   const hasAverageData = averageResult.sampleSize >= MIN_SAMPLE_SIZE;
   const maxCount = Math.max(1, ...hourlyUsage.map((d) => d.count));
 
@@ -234,13 +253,13 @@ export default function StatsPage() {
                 📊
               </span>
               <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                시간대별 사용 빈도 (평일 9시~18시 기준)
+                오늘 시간대별 이용 횟수 (9시~18시)
               </h2>
             </div>
 
             {!hasChartData ? (
               <p className="flex h-56 items-center justify-center px-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
-                아직 통계를 내기엔 데이터가 부족합니다
+                오늘은 아직 이용 기록이 없어요
               </p>
             ) : (
               <div className="h-64 w-full">
